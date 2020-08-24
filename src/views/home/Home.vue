@@ -7,7 +7,7 @@
 			</template>
 		</NavBar>
 		<!-- scroll滚动插件 -->
-		<Scroll class="content">
+		<Scroll class="content" ref="scroll" :probetype="3">
 			<!-- 轮播图 -->
 			<div class="homeSwiper">
 				<swiper ref="mySwiper" :options="swiperOptions" v-if="banner.length>1">
@@ -28,7 +28,7 @@
 			<!-- 商品列表 -->
 			<GoodsList :goodsList="goods[currentType]"></GoodsList>
 		</Scroll>
-
+		<BackTop @click.native="backClick"></BackTop>
 	</div>
 </template>
 
@@ -37,7 +37,9 @@
 	import TabControl from '../../components/privately/TabControl.vue'
 	import GoodsList from '../../components/privately/goods/GoodsList.vue'
 	import Scroll from '../../components/common/Scroll.vue'
-
+	import BackTop from '../../components/privately/BackTop.vue'
+	
+	
 	import Recommend from './children/RecommendView.vue'
 	import Fashion from './children/FashionView.vue'
 
@@ -52,7 +54,8 @@
 			Fashion,
 			TabControl,
 			GoodsList,
-			Scroll
+			Scroll,
+			BackTop
 		},
 		data() {
 			return {
@@ -103,6 +106,7 @@
 			 *事件监听
 			 *
 			 */
+			
 			// 监听TabControl切换，控制给GoodsList传递的数据
 			tabClick(number) {
 				switch (number) {
@@ -116,7 +120,10 @@
 						this.currentType = 'sell'
 						break
 				}
-				console.log(number)
+			},
+			// 返回顶部的点击事件,点击返回顶部组件，获取该组件对象this.$refs.scroll.scroll，然后调用scrollTo方法
+			backClick(){
+				this.$refs.scroll.scroll.scrollTo(0,0,500)
 			},
 
 
