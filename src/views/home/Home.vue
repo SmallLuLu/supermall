@@ -6,8 +6,9 @@
 				<div>购物街</div>
 			</template>
 		</NavBar>
+		<TabControl :title="tabcontrol" class="TabControl" @tabClick="tabClick" ref="tabcontrol1" v-show="tabcontrolShow"></TabControl>
 		<!-- scroll滚动插件 -->
-		<Scroll class="content" ref="scroll" :probetype="3">
+		<Scroll class="content" ref="scroll" :probetype="3" @scroll="contentScroll" :pullupload="true" @pullingUp="loadMore">
 			<!-- 轮播图 -->
 			<div class="homeSwiper">
 				<swiper ref="mySwiper" :options="swiperOptions" v-if="banner.length>1">
@@ -24,11 +25,11 @@
 			<!-- 本周流行 -->
 			<Fashion></Fashion>
 			<!-- 可控制的导航栏 -->
-			<TabControl :title="tabcontrol" class="TabControl" @tabClick="tabClick"></TabControl>
+			<TabControl :title="tabcontrol" class="TabControl" @tabClick="tabClick" ref="tabcontrol2" ></TabControl>
 			<!-- 商品列表 -->
 			<GoodsList :goodsList="goods[currentType]"></GoodsList>
 		</Scroll>
-		<BackTop @click.native="backClick"></BackTop>
+		<BackTop @click.native="backClick" v-show="backtop==true"></BackTop>
 	</div>
 </template>
 
@@ -38,7 +39,7 @@
 	import GoodsList from '../../components/privately/goods/GoodsList.vue'
 	import Scroll from '../../components/common/Scroll.vue'
 	import BackTop from '../../components/privately/BackTop.vue'
-	
+	import {debounce} from '../../components/common/debounce.js'
 	
 	import Recommend from './children/RecommendView.vue'
 	import Fashion from './children/FashionView.vue'
@@ -62,6 +63,7 @@
 				banner: [], // 轮播图数据
 				recommend: [], //Recommend数据
 				tabcontrol: ['流行', '新款', '精选'], //传递给TabControl的数据
+				tabcontrolShow:false,
 				// 首页商品数据'pop':流行数据，'news':新款数据,'sell':精选数据
 				goods: {
 					'pop': {
@@ -78,6 +80,8 @@
 					}
 				},
 				currentType: 'pop', //首页商品数据切换传递给GoodsList的数据
+				backtop:false,//返回顶部是否显示
+				isFixed:false,
 				// 设置swiper的配置
 				swiperOptions: {
 					pagination: {
@@ -99,7 +103,6 @@
 			this.getHomeGoods('new');
 			// 请求精选数据
 			this.getHomeGoods('sell');
-
 		},
 		methods: {
 			/*
@@ -120,11 +123,26 @@
 						this.currentType = 'sell'
 						break
 				}
+				this.$refs.tabcontrol1.number=number;
+				this.$refs.tabcontrol2.number=number;
 			},
 			// 返回顶部的点击事件,点击返回顶部组件，获取该组件对象this.$refs.scroll.scroll，然后调用scrollTo方法
 			backClick(){
 				this.$refs.scroll.scroll.scrollTo(0,0,500)
 			},
+			// Scroll中弹射出来的滚动监听事件
+			contentScroll(position){
+				this.backtop= -position.y>1000?true:false;
+				this.tabcontrolShow= -position.y>654?true:false;
+			},
+			// 上拉加载更多
+			loadMore(){
+				this.getHomeGoods(this.currentType);
+			},
+
+
+
+
 
 
 			/*
@@ -147,13 +165,19 @@
 						let pageGoods = res.data.list;
 						this.goods[type].list.push(...pageGoods);
 						this.goods[type].page = page;
+						this.$refs.scroll.scroll.finishPullUp();//完成加载更多
 					})
 			}
 
 		},
 		computed: {},
 		mounted() {
-
+			// 监听item中图片加载完成使用的是事件总线的方法,也就是better-ScrollBUG的解决
+			this.$bus.$on('itemImageLoad',()=>{
+				// 防抖函数的调用
+				debounce(this.$refs.scroll.scroll.refresh(),50)
+				
+			})
 		}
 	}
 </script>
@@ -184,13 +208,11 @@
 	}
 
 	.TabControl {
-		position: sticky;
-		top: 44px;
 		background: white;
 	}
+	
 	.content{
 		height: -webkit-calc(100% - 93px);
-		margin-top: 44px;
 		overflow-y:hidden ;
 	}
 </style>

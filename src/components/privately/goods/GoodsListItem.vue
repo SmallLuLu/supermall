@@ -1,6 +1,6 @@
 <template>
 	<div class="goodItem">
-		<img :src="goodItem.show.img" :alt="goodItem.title">
+		<img :src="goodItem.show.img" :alt="goodItem.title" @load="imageLoad">
 		<div class="goods-info">
 			<p>{{goodItem.title}}</p>
 			<span class="price">¥{{goodItem.price}}</span>
@@ -12,6 +12,12 @@
 <script>
 	export default {
 		props: ["goodItem"],
+		methods:{
+			// 使用事件总线的方法发射出去方法
+			imageLoad(){
+				this.$bus.$emit('itemImageLoad')
+			}
+		}
 	}
 </script>
 
