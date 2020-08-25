@@ -1,6 +1,6 @@
 <template>
 	<div class="goodItem">
-		<img :src="goodItem.show.img" :alt="goodItem.title" @load="imageLoad">
+		<img :src="goodItem.show.img" :alt="goodItem.title" @load="imageLoad" @click="jumpDetail">
 		<div class="goods-info">
 			<p>{{goodItem.title}}</p>
 			<span class="price">¥{{goodItem.price}}</span>
@@ -16,6 +16,9 @@
 			// 使用事件总线的方法发射出去方法
 			imageLoad(){
 				this.$bus.$emit('itemImageLoad')
+			},
+			jumpDetail(){
+				this.$router.push('/detail/'+this.goodItem.iid)
 			}
 		}
 	}

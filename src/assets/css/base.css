@@ -64,3 +64,29 @@
   .right {
     float: right;
   }
+  /*padding的样式初始化*/
+  ul,ol {
+  	padding:0;
+  }
+  
+  /*列表的样式初始化*/
+  ul,ol,li {
+  	list-style:none;
+  }
+  
+  /*font-style的样式初始化*/
+  em {
+  	font-style: normal;
+  }
+  
+  /*下划线的样式初始化*/
+  a {
+  	text-decoration: none;
+  }
+  /*BFC的方法*/
+  .clear:after{
+  	content: "";display: block;clear: both;
+  }
+  clear {
+  	zoom:1;
+  }
