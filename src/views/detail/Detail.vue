@@ -77,7 +77,7 @@
 				this.topImages=res.result.itemInfo.topImages;
 				this.goods=new Goods(data.itemInfo,data.columns,data.shopInfo.services)
 				this.shop=data.shopInfo;
-				console.log(this.shop)
+				console.log(data)
 			})
 		},
 		methods:{
