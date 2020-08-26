@@ -10,7 +10,8 @@
 		components:{
 			GoodsListItem
 		},
-		props:["goodsList"]
+		props:["goodsList"],
+		
 		
 	}
 </script>

@@ -23,7 +23,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="shopBottom"><a href="" class="shopLink">进店逛逛</a></div>
+		<div class="shopBottom"><a href="###" class="shopLink">进店逛逛</a></div>
 
 	</div>
 </template>
@@ -36,8 +36,9 @@
 
 <style scoped>
 	.detailShop {
-		border-top: 10px solid #eee;
-		padding-top: 20px;
+		border-top: 6px solid #eee;
+		border-bottom: 6px solid #eee;
+		padding: 20px 0px;
 	}
 
 	.shopLogo {

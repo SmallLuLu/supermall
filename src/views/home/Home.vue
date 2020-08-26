@@ -81,7 +81,8 @@
 				},
 				currentType: 'pop', //首页商品数据切换传递给GoodsList的数据
 				backtop:false,//返回顶部是否显示
-				isFixed:false,
+				isFixed:false,//分类导航的显示
+				saveY:0,//记录当前页面的位置
 				// 设置swiper的配置
 				swiperOptions: {
 					pagination: {
@@ -123,6 +124,7 @@
 						this.currentType = 'sell'
 						break
 				}
+				// 商品展示导航栏
 				this.$refs.tabcontrol1.number=number;
 				this.$refs.tabcontrol2.number=number;
 			},
@@ -132,6 +134,7 @@
 			},
 			// Scroll中弹射出来的滚动监听事件
 			contentScroll(position){
+				console.log(position)
 				this.backtop= -position.y>1000?true:false;
 				this.tabcontrolShow= -position.y>654?true:false;
 			},
@@ -173,11 +176,18 @@
 		computed: {},
 		mounted() {
 			// 监听item中图片加载完成使用的是事件总线的方法,也就是better-ScrollBUG的解决
-			this.$bus.$on('itemImageLoad',()=>{
+			this.$bus.$on('homeItemImageLoad',()=>{
 				// 防抖函数的调用
 				debounce(this.$refs.scroll.scroll.refresh(),50)
 				
 			})
+		},
+		activated() {
+			this.$refs.scroll.scroll.scrollTo(0,this.saveY,0)
+			console.log('activated')
+		},
+		deactivated() {
+			this.saveY=this.$refs.scroll.scroll.y;
 		}
 	}
 </script>
