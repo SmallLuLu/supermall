@@ -124,7 +124,7 @@
 						this.currentType = 'sell'
 						break
 				}
-				// 商品展示导航栏
+				// 商品展示导航栏一致
 				this.$refs.tabcontrol1.number=number;
 				this.$refs.tabcontrol2.number=number;
 			},
@@ -134,7 +134,6 @@
 			},
 			// Scroll中弹射出来的滚动监听事件
 			contentScroll(position){
-				console.log(position)
 				this.backtop= -position.y>1000?true:false;
 				this.tabcontrolShow= -position.y>654?true:false;
 			},
@@ -183,8 +182,7 @@
 			})
 		},
 		activated() {
-			this.$refs.scroll.scroll.scrollTo(0,this.saveY,0)
-			console.log('activated')
+			// this.$refs.scroll.scroll.scrollTo(0,this.saveY,0)
 		},
 		deactivated() {
 			this.saveY=this.$refs.scroll.scroll.y;

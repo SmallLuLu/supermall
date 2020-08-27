@@ -11,7 +11,7 @@
 			</template>
 		</NavBar>
 		<!-- 滚动插件 -->
-		<Scroll :probetype="3" :pullupload="true" class="content" ref="scroll">
+		<Scroll :probetype="3" :pullupload="true" class="content" ref="scroll" @scroll="detailScroll">
 			<!-- 轮播图 -->
 			<div class="detailSwiper">
 				<swiper ref="mySwiper" :options="swiperOptions" v-if="topImages.length>1">
@@ -28,16 +28,19 @@
 			<!-- 商品详情 -->
 			<DetailGoodsInfo :detailgoodinfo="detailInfo" @detailImageLoad="detailImageLoad"></DetailGoodsInfo>
 			<!-- 商品尺寸 -->
-			<DetailParamInfo :paramsinfo="pramaInfo"></DetailParamInfo>
+			<DetailParamInfo :paramsinfo="pramaInfo" ref="params"></DetailParamInfo>
 			<!-- 用户评价 -->
-			<DetailCommon :detailcommon="commentInfo"></DetailCommon>
+			<DetailCommon :detailcommon="commentInfo" ref="common"></DetailCommon>
 			<!-- 热门推荐 -->
-			<div class="detailRecommend">
+			<div class="detailRecommend" ref="recommend">
 				<div class="detailRecommendTitle">热门推荐</div>
 				<GoodsList :goodsList="recommendInfo"></GoodsList>
 			</div>
 		</Scroll>
-
+		<!-- 底部状态栏 -->
+		<DetailBottomBar @addBayCar="addbuycar"></DetailBottomBar>
+		<!-- 返回顶部 -->
+		<BackTop ref="backTop" @click.native="backTop"></BackTop>
 	</div>
 </template>
 
@@ -48,6 +51,7 @@
 		debounce
 	} from '../../components/common/debounce.js'
 	import GoodsList from '../../components/privately/goods/GoodsList.vue'
+	import BackTop from '../../components/privately/BackTop.vue'
 
 
 	import DetailBaseInfo from './children/DetailBaseInfo.vue'
@@ -55,6 +59,7 @@
 	import DetailGoodsInfo from './children/DetailGoodsInfo.vue'
 	import DetailParamInfo from './children/DetailParamInfo.vue'
 	import DetailCommon from './children/DetailCommon.vue'
+	import DetailBottomBar from './children/DetailBottomBar.vue'
 	import {
 		getDetail,
 		Goods,
@@ -71,7 +76,9 @@
 			DetailGoodsInfo,
 			DetailParamInfo,
 			DetailCommon,
-			GoodsList
+			GoodsList,
+			DetailBottomBar,
+			BackTop
 		},
 		data() {
 			return {
@@ -85,6 +92,8 @@
 				pramaInfo: {}, //商品尺寸信息
 				commentInfo: [], //用户评价
 				recommendInfo: [], //热门推荐
+				themeTopYs: [], //导航栏对应的位置的高度
+				getThemeTopY: null, //获取导航栏对应的位置的高度
 				// 设置swiper的配置
 				swiperOptions: {
 					pagination: {
@@ -98,6 +107,8 @@
 			}
 		},
 		created() {
+			// 获取热门推荐数据
+			this.getRecommend();
 			this.iid = this.$route.params.id; //获取路由传过来的id
 			// 根据id获取数据
 			getDetail(this.iid)
@@ -117,34 +128,81 @@
 					if (data.rate.list) {
 						this.commentInfo = data.rate.list;
 					}
+
 				});
-			// 获取热门推荐数据
-			this.getRecommend();
+			// 给getThemeTopY赋值
+			this.getThemeTopY = debounce(() => {
+				this.themeTopYs = [];
+				this.themeTopYs.push(0);
+				this.themeTopYs.push(-this.$refs.params.$el.offsetTop+44);
+				this.themeTopYs.push(-this.$refs.common.$el.offsetTop+44);
+				this.themeTopYs.push(-this.$refs.recommend.offsetTop+44);
+			}, 50)
 
 		},
 		methods: {
 			// 商品详情导航栏的切换
 			titleChange(index) {
 				this.titlesActive = index;
+				// 点击导航栏滚动到相应的位置
+				this.$refs.scroll.scroll.scrollTo(0, this.themeTopYs[index], 0)
 			},
 			// 商品详情返回上一页面
 			detailGoback() {
 				this.$router.go(-1)
 			},
-			// 解决Better-Scroll中BUG
+			// 解决Better-Scroll中BUG，图片加载之后重新刷新content的高度
 			detailImageLoad() {
-				debounce(this.$refs.scroll.scroll.refresh(), 50)
+				debounce(this.$refs.scroll.scroll.refresh(), 50);
+				this.getThemeTopY();
 			},
 			// 热门推荐数据请求回调函数
 			getRecommend() {
 				getRecommend()
 					.then(res => {
 						this.recommendInfo = res.data
-						console.log(this.recommendInfo)
 					})
+			},
+			detailScroll(position) {
+				// 根据滚动的高度设置上面导航栏的样式
+				const positionY = -position.y;
+				if (positionY > 0 && positionY <-this.themeTopYs[1]) {
+					this.titlesActive = 0
+				} else if (positionY >= -this.themeTopYs[1] && positionY <-this.themeTopYs[2]) {
+					this.titlesActive = 1
+				} else if (positionY >= -this.themeTopYs[2] && positionY < -this.themeTopYs[3]) {
+					this.titlesActive = 2
+				}else if(positionY >= -this.themeTopYs[3]){
+					this.titlesActive = 3
+				}
+				// 设置回到顶部的显现和隐藏
+				if(positionY>1000){
+					this.$refs.backTop.show=true
+				}else{
+					this.$refs.backTop.show=false
+				}
+			},
+			// 返回顶部
+			backTop(){
+				this.$refs.scroll.scroll.scrollTo(0,0,0);
+				this.titlesActive = 0
+			},
+			// 加入购物车
+			addbuycar(){
+				const product={};
+				product.image=this.topImages[0];
+				product.title=this.goods.title;
+				product.desc=this.goods.desc;
+				product.price=this.goods.newPrice;
+				product.iid=this.iid;
+				product.cont=1;
+				this.$store.commit('addBuyCar',product);
 			}
+			
+			
 		},
 		mounted() {
+
 		}
 
 	}

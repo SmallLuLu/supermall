@@ -7,6 +7,7 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 Vue.use(VueAwesomeSwiper)
 
+
 Vue.config.productionTip = false
 // 事件总线
 Vue.prototype.$bus=new Vue()
