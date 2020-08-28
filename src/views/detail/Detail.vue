@@ -41,18 +41,18 @@
 		<DetailBottomBar @addBayCar="addbuycar"></DetailBottomBar>
 		<!-- 返回顶部 -->
 		<BackTop ref="backTop" @click.native="backTop"></BackTop>
+		<!-- 添加购物车成功 -->
+		<Toast ref="toast"></Toast>
 	</div>
 </template>
 
 <script>
 	import NavBar from '../../components/common/navbar.vue'
 	import Scroll from '../../components/common/Scroll.vue'
-	import {
-		debounce
-	} from '../../components/common/debounce.js'
+	import {debounce} from '../../components/common/debounce.js'
 	import GoodsList from '../../components/privately/goods/GoodsList.vue'
 	import BackTop from '../../components/privately/BackTop.vue'
-
+	import Toast from '../../components/common/toast/Toast.vue'
 
 	import DetailBaseInfo from './children/DetailBaseInfo.vue'
 	import DetailShop from './children/DetailShop.vue'
@@ -78,7 +78,8 @@
 			DetailCommon,
 			GoodsList,
 			DetailBottomBar,
-			BackTop
+			BackTop,
+			Toast
 		},
 		data() {
 			return {
@@ -94,6 +95,8 @@
 				recommendInfo: [], //热门推荐
 				themeTopYs: [], //导航栏对应的位置的高度
 				getThemeTopY: null, //获取导航栏对应的位置的高度
+				message:'购物车添加成功',
+				toastIsShow:false,
 				// 设置swiper的配置
 				swiperOptions: {
 					pagination: {
@@ -134,9 +137,9 @@
 			this.getThemeTopY = debounce(() => {
 				this.themeTopYs = [];
 				this.themeTopYs.push(0);
-				this.themeTopYs.push(-this.$refs.params.$el.offsetTop+44);
-				this.themeTopYs.push(-this.$refs.common.$el.offsetTop+44);
-				this.themeTopYs.push(-this.$refs.recommend.offsetTop+44);
+				this.themeTopYs.push(-this.$refs.params.$el.offsetTop + 44);
+				this.themeTopYs.push(-this.$refs.common.$el.offsetTop + 44);
+				this.themeTopYs.push(-this.$refs.recommend.offsetTop + 44);
 			}, 50)
 
 		},
@@ -166,46 +169,45 @@
 			detailScroll(position) {
 				// 根据滚动的高度设置上面导航栏的样式
 				const positionY = -position.y;
-				if (positionY > 0 && positionY <-this.themeTopYs[1]) {
+				if (positionY > 0 && positionY < -this.themeTopYs[1]) {
 					this.titlesActive = 0
-				} else if (positionY >= -this.themeTopYs[1] && positionY <-this.themeTopYs[2]) {
+				} else if (positionY >= -this.themeTopYs[1] && positionY < -this.themeTopYs[2]) {
 					this.titlesActive = 1
 				} else if (positionY >= -this.themeTopYs[2] && positionY < -this.themeTopYs[3]) {
 					this.titlesActive = 2
-				}else if(positionY >= -this.themeTopYs[3]){
+				} else if (positionY >= -this.themeTopYs[3]) {
 					this.titlesActive = 3
 				}
 				// 设置回到顶部的显现和隐藏
-				if(positionY>1000){
-					this.$refs.backTop.show=true
-				}else{
-					this.$refs.backTop.show=false
+				if (positionY > 1000) {
+					this.$refs.backTop.show = true
+				} else {
+					this.$refs.backTop.show = false
 				}
 			},
 			// 返回顶部
-			backTop(){
-				this.$refs.scroll.scroll.scrollTo(0,0,0);
+			backTop() {
+				this.$refs.scroll.scroll.scrollTo(0, 0, 0);
 				this.titlesActive = 0
 			},
 			// 加入购物车
-			addbuycar(){
-				const product={};
-				product.image=this.topImages[0];
-				product.title=this.goods.title;
-				product.desc=this.goods.desc;
-				product.price=this.goods.newPrice;
-				product.iid=this.iid;
-				product.cont=1;
-				this.$store.commit('addBuyCar',product);
+			addbuycar() {
+				const product = {};
+				product.image = this.topImages[0];
+				product.title = this.goods.title;
+				product.desc = this.goods.desc;
+				product.price = this.goods.newPrice;
+				product.iid = this.iid;
+				product.cont = 1;
+				this.$store.commit('addBuyCar', product);
+				this.$refs.toast.show("购物城添加成功",1500)
+			},
+			},
+			mounted() {
+
 			}
-			
-			
-		},
-		mounted() {
 
 		}
-
-	}
 </script>
 
 <style scoped>
@@ -262,4 +264,15 @@
 		text-align: center;
 		font-size: 16px;
 	}
+	/* .el-message-box__wrapper{
+		width: 80% !important;
+	} */
+	.el-message-box__wrapper .el-message-box{
+		width: 300px!important;
+	}
+</style>
+<style>
+  .el-message-box {
+    width: 80%;
+  }
 </style>

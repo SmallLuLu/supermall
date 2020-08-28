@@ -26,20 +26,15 @@
 				let numMonry = parseFloat(money.substring(1, 6)) * number
 				this.active = !this.active
 				if (this.active == true) {
-					this.$store.commit('buyCarMoney', numMonry)
-					this.$store.commit('allNumber', 1)
+					this.$emit("allNumber",1);
+					this.$emit("allMoney",numMonry);
 				} else {
-					this.$store.commit('buyCarMoney', -numMonry)
-					this.$store.commit('allNumber', -1)
+					this.$emit("allNumber",-1);
+					this.$emit("allMoney",-numMonry)
 				}
 			}
 		},
 		watch: {
-			'this.$store.state.allCheck':function(newVal){
-				console.log(newVal)
-				// this.active=newVal;
-				// console.log(this.active)
-			}
 		}
 	}
 </script>

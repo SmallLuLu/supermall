@@ -7,12 +7,12 @@
 			</template>
 		</NavBar>
 		<Scroll class="cartScrollContent" ref="scroll" :probetype="3" >
-			<CartShopInfo v-for="item in $store.state.buyCar.info" :key="item.iid" :item="item"></CartShopInfo>
+			<CartShopInfo v-for="item in $store.state.buyCar.info" :key="item.iid" :item="item" @allNumber="allNumberC" @allMoney="allMoneyC" :ref="item.iid"></CartShopInfo>
 		</Scroll>
 		<div class="cartSlove">
 			<div @click="allCheck" ><i class="iconfont icon-xuanzhong" :class="{active:active==true}"></i>全选</div>
-			<div>合计:￥{{$store.state.buyCarMoney}}</div>
-			<div>去计算({{$store.state.buyNumber}})</div>
+			<div>合计:￥{{allMoney}}</div>
+			<div>去计算({{allNumber}})</div>
 		</div>
 	</div>
 </template>
@@ -31,14 +31,48 @@
 		},
 		data(){
 			return{
-				active:false
+				active:false,
+				allNumber:0,
+				allMoney:0,
+				fatherChecked:true
 			}
 		},
 		methods:{
 			allCheck(){
 				this.active=!this.active;
-				this.$store.commit('allCheck',this.active);
+				console.log(this.active)
+				this.$store.state.buyCar.iid.forEach((a)=>{
+					this.$refs[a][0].active=this.active;
+				})
+				
+				if(this.active==false){
+					this.allNumber=0;
+					this.allMoney=0
+				}else{
+					this.allNumber=this.$store.state.buyCar.iid.length;
+					let money=0;
+					for(let i=0;i<this.$store.state.buyCar.info.length;i++){
+						console.log()
+						money+=parseFloat(this.$store.state.buyCar.info[i].price.substring(1, 6))*this.$store.state.buyCar.info[i].cont
+					}
+					this.allMoney=money;
+				}
+			},
+			allNumberC(number){
+				this.allNumber+=number
+				if(this.allNumber==this.$store.state.buyCar.iid.length){
+					this.active=true
+					console.log(this.active)
+				}else{
+					this.active=false
+					console.log(this.active)
+				}
+			},
+			allMoneyC(money){
+				this.allMoney+=money
 			}
+		},
+		watch:{
 		}
 	}
 </script>

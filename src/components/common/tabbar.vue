@@ -1,5 +1,5 @@
 <template>
-	<div class="tabbarWrap">
+	<div class="tabbarWrap ignore">
 		<router-link v-for="(tabbar,index) in tabbardata" :key="index" tag="div" :to="tabbar.url">
 			<i class="iconfont" :class="[tabbar.iconClass]"></i>
 			<p>{{tabbar.pFont}}</p>

@@ -2,11 +2,23 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-// 引入轮播图
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
-Vue.use(VueAwesomeSwiper)
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import FastClick from 'fastclick'
+import VueLazyLoad from 'vue-lazyload'
 
+// 引入轮播图
+Vue.use(VueAwesomeSwiper)
+// 使用element ui
+Vue.use(ElementUI);
+// 使用fastclick
+FastClick.attach(document.body)
+// 使用图片懒加载
+Vue.use(VueLazyLoad,{
+	loading:require('./assets/img/common/placeholder.png')
+})
 
 Vue.config.productionTip = false
 // 事件总线
