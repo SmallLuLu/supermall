@@ -14,10 +14,6 @@
 
 <style scoped>
 	.navbarWrap{
-		/* position: fixed;
-		top: 0px;
-		left: 0px;
-		width: 100%; */
 		display: flex;
 		height: 44px;
 		text-align: center;

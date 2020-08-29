@@ -29,6 +29,9 @@
 					this.$router.replace('/detail/'+this.goodItem.item_id)
 				}
 			}
+		},
+		mounted() {
+			console.log(this.goodItem)
 		}
 	}
 </script>

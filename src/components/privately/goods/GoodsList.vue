@@ -11,7 +11,9 @@
 			GoodsListItem
 		},
 		props:["goodsList"],
-		
+		mounted() {
+			console.log(this.goodsList)
+		}
 		
 	}
 </script>
