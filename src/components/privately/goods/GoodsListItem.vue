@@ -1,6 +1,6 @@
 <template>
 	<div class="goodItem">
-		<img v-lazy="goodItem.image?goodItem.image:goodItem.show.img" :alt="goodItem.title" @load="imageLoad" @click="jumpDetail">
+		<img v-lazy="goodItem.img?goodItem.img:goodItem.image?goodItem.image:goodItem.show.img" :alt="goodItem.title" @load="imageLoad" @click="jumpDetail">
 		<div class="goods-info">
 			<p>{{goodItem.title}}</p>
 			<span class="price">¥{{goodItem.price}}</span>
@@ -12,26 +12,23 @@
 <script>
 	export default {
 		props: ["goodItem"],
-		methods:{
+		methods: {
 			// 使用事件总线的方法发射出去方法
-			imageLoad(){
-				if(this.$route.path.indexOf('/home')){
+			imageLoad() {
+				if (this.$route.path.indexOf('/home')) {
 					this.$bus.$emit('homeItemImageLoad')
-				}else if(this.$route.path.indexOf('/detail')){
+				} else if (this.$route.path.indexOf('/detail')) {
 					this.$bus.$emit('detailImageLoad')
 				}
-				
+
 			},
-			jumpDetail(){
-				if(this.goodItem.iid){
-					this.$router.push('/detail/'+this.goodItem.iid)
-				}else{
-					this.$router.replace('/detail/'+this.goodItem.item_id)
+			jumpDetail() {
+				if (this.goodItem.iid) {
+					this.$router.push('/detail/' + this.goodItem.iid)
+				} else {
+					this.$router.replace('/detail/' + this.goodItem.item_id)
 				}
 			}
-		},
-		mounted() {
-			console.log(this.goodItem)
 		}
 	}
 </script>

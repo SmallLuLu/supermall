@@ -1,7 +1,7 @@
 <template>
 	<div class="tabMenu">
 		<Scroll class="tabMenuScroll">
-			<div v-for="(item,index) in tabmenus" :key="index" @click="menuClick(index,item.maitKey)" :class="{active:menuActive==index}">{{item.title}}</div>
+			<div v-for="(item,index) in tabmenus" :key="index" @click="menuClick(index,item.maitKey,item.miniWallkey)" :class="{active:menuActive==index}">{{item.title}}</div>
 		</Scroll>
 	</div>
 </template>
@@ -19,9 +19,9 @@
 			}
 		},
 		methods:{
-			menuClick(index,maitKey){
+			menuClick(index,maitKey,miniWallkey){
 				this.menuActive=index;
-				this.$emit('tabMenuChange',maitKey)
+				this.$emit('tabMenuChange',[maitKey,miniWallkey])
 			}
 		}
 	}

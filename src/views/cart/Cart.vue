@@ -6,9 +6,11 @@
 				<div>购物车({{$store.state.buyCar.iid.length}})</div>
 			</template>
 		</NavBar>
+		<!-- 购物车的商品 -->
 		<Scroll class="cartScrollContent" ref="scroll" :probetype="3" >
 			<CartShopInfo v-for="item in $store.state.buyCar.info" :key="item.iid" :item="item" @allNumber="allNumberC" @allMoney="allMoneyC" :ref="item.iid"></CartShopInfo>
 		</Scroll>
+		<!-- 购物车商品核算 -->
 		<div class="cartSlove">
 			<div @click="allCheck" ><i class="iconfont icon-xuanzhong" :class="{active:active==true}"></i>全选</div>
 			<div>合计:￥{{allMoney}}</div>
@@ -40,11 +42,9 @@
 		methods:{
 			allCheck(){
 				this.active=!this.active;
-				console.log(this.active)
 				this.$store.state.buyCar.iid.forEach((a)=>{
 					this.$refs[a][0].active=this.active;
 				})
-				
 				if(this.active==false){
 					this.allNumber=0;
 					this.allMoney=0
@@ -62,10 +62,8 @@
 				this.allNumber+=number
 				if(this.allNumber==this.$store.state.buyCar.iid.length){
 					this.active=true
-					console.log(this.active)
 				}else{
 					this.active=false
-					console.log(this.active)
 				}
 			},
 			allMoneyC(money){

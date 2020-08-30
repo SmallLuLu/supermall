@@ -1,6 +1,6 @@
 <template>
 	<div class="good">
-		<GoodsListItem v-for="(gooditem,index) in goodsList.list" :key="index" :goodItem="gooditem"></GoodsListItem>
+		<GoodsListItem v-for="(gooditem,index) in porpGoodsList" :key="index" :goodItem="gooditem"></GoodsListItem>
 	</div>
 </template>
 
@@ -11,8 +11,11 @@
 			GoodsListItem
 		},
 		props:["goodsList"],
-		mounted() {
-			console.log(this.goodsList)
+		computed:{
+			porpGoodsList(){
+				return this.goodsList.list?this.goodsList.list:this.goodsList
+
+			}
 		}
 		
 	}
@@ -20,6 +23,7 @@
 
 <style scoped>
 	.good{
+		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;

@@ -27,7 +27,7 @@
 			},
 			userImg: {
 				type: String,
-				default: require('assets/img/profile/userImg.png')
+				default: require('assets/img/profile/userImg.jpg')
 			},
 			userName:{
 				type:String,

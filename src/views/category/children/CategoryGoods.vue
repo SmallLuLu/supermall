@@ -3,7 +3,7 @@
 		<el-row :gutter="20">
 			<el-col :span="8" v-for="(item,index) in categorygoodsinfo" :key="index" class="goodWrap">
 					<a :href="item.link">
-						<img :src="item.image" :alt="item.title" class="goodImg">
+						<img v-lazy="item.image" :alt="item.title" class="goodImg">
 						<p class="goodName">{{item.title}}</p>
 					</a>
 			</el-col>
