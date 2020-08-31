@@ -44,7 +44,12 @@ const routes = [
 	{
 		path: '/cart',
 		name:'Cart',
-		component: Cart
+		component: Cart,
+		beforEnter:(to,from,next)=>{
+			console.log(to);
+			console.log(from);
+			next()
+		}
 	},
 	{
 		path:'/detail/:id',
@@ -56,5 +61,19 @@ const routes = [
 const router = new VueRouter({
 	mode: 'history',
 	routes
+})
+router.beforeEach((to,from,next)=>{
+	if(to.path=='/cart'||to.path=='/profile'){
+		let userCookie= localStorage.getItem('userCookie');
+		if(userCookie==null){
+			alert('请先登录');
+			next()
+		}else{
+			next()
+		}
+	}else{
+		next()
+	}
+	
 })
 export default router
