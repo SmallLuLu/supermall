@@ -3,7 +3,7 @@ import axios from 'axios'
 // axios封装
 export function ajax(config){
     const instance = axios.create({
-        baseURL:'http://152.136.185.210:8000/api/z8',
+        baseURL:'http://xxx.xxx.xxx.xxx:8000/api/z8',
         timeout:5000
     });
 	// axios请求拦截
